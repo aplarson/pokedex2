@@ -15,8 +15,8 @@ Pokedex.Router = Backbone.Router.extend({
         this.pokemonDetail(id, callback)
       }.bind(this));
     } else {
-      var pokemon = this._pokemonIndex.collection.get(id);
-      if (pokemon){
+      var pokemon = this._pokemonIndex.collection.get(id)
+      if (pokemon) {
         this._pokemonDetailView = new Pokedex.Views.PokemonDetail({
           model: pokemon
         })
@@ -24,6 +24,7 @@ Pokedex.Router = Backbone.Router.extend({
       } else {
         var detail = this;
         this._pokemonIndex.refreshPokemon(function () {
+          // Avoid infinite AJAX requests by only displaying if model exists
           if (detail._pokemonIndex.collection.get(id)) {
             detail.pokemonDetail(id, callback)
           }
