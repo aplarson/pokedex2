@@ -34,8 +34,7 @@ window.Pokedex.Views.PokemonIndex = Backbone.View.extend({
   },
   
   addPokemonToList: function (pokemon) {
-    var scriptContent = $("script#pokemon-list-item-template").html();
-    var templateFn = _.template(scriptContent);
+    var templateFn = JST["pokemonListItem"];
     var renderedTemplate = templateFn({
       pokemon: pokemon
     })
@@ -52,9 +51,31 @@ window.Pokedex.Views.PokemonIndex = Backbone.View.extend({
 
 
 Pokedex.Views.PokemonDetail = Backbone.View.extend({
-  events: {
-    "click .toys li": "selectToyFromList"
+  initialize: function () {
+    this.state = "closed"
   },
+  
+  events: {
+    "click .toys li": "selectToyFromList",
+    "dblclick div.detail": "openEditForm",
+    "submit form": "submitEditForm",
+    "click button.upload-image": "uploadPicture"
+  },
+  
+  uploadPicture: function(event){
+    event.preventDefault()
+    filepicker.setKey("AdhYP1fGTQ0ChKxAyNoa7z");
+
+    filepicker.pick(
+      function(Blob){
+        $("div.pokemon-detail input#pokemon_image_url").val(Blob.url)
+        $("div.pokemon-detail img").attr("src", Blob.url)
+      }
+    );
+    
+    
+  },
+  
 
   refreshPokemon: function (callback) {
     this.model.fetch({
@@ -66,17 +87,18 @@ Pokedex.Views.PokemonDetail = Backbone.View.extend({
   },
 
   render: function () {
-    
-    var scriptContent = $("script#pokemon-detail-template").html();
-    var templateFn = _.template(scriptContent);
+    if (this.state === "open") {
+      var templateFn = JST["pokemonEditDetail"]
+    } else {
+      var templateFn = JST["pokemonDetail"]
+    }
     var renderedTemplate = templateFn({
       pokemon: this.model
     })
     this.$el.html(renderedTemplate);
    
     var toys = this.model.toys();
-    var toyScriptContent = $("script#toy-list-item-template").html();
-    var toyTemplateFn = _.template(toyScriptContent);
+    var toyTemplateFn = JST["toyListItem"];
     
     toys.each(function (toy) {
       var renderedToyTemplate = toyTemplateFn({
@@ -94,13 +116,44 @@ Pokedex.Views.PokemonDetail = Backbone.View.extend({
     var toyId = $target.data('id');
     
     Backbone.history.navigate("/pokemon/" + this.model.id + "/toys/" + toyId, {trigger: true})
+  },
+  
+  openEditForm: function (event) {
+    this.state = "open";
+    this.render();
+  },
+  
+  submitEditForm: function (event) {
+    event.preventDefault();
+    var pokeParams = $(event.currentTarget).serializeJSON()["pokemon"];
+    this.model.set(pokeParams);
+    this.model.save({}, {
+      success: function () {
+        this.state="closed"
+        this.render();
+      }.bind(this)
+    })
+
   }
 });
 
 Pokedex.Views.NewForm = Backbone.View.extend({
   events: {
-    "submit form": "newPokemon"
+    "submit form": "newPokemon",
+    "click button.picture": "runFilePicker"
   },
+  runFilePicker: function(event){
+    event.preventDefault();
+    filepicker.setKey("AdhYP1fGTQ0ChKxAyNoa7z");
+
+    filepicker.pick(
+      function(Blob){
+        $("#pokemon_image_url").val(Blob.url)
+        $("div.image").prepend("<img src=\"" + Blob.url + "\">")
+      }
+    );
+  },
+  
   newPokemon: function(event){
     event.preventDefault();
     var pokeParams = $(event.currentTarget).serializeJSON();
@@ -122,8 +175,7 @@ Pokedex.Views.NewForm = Backbone.View.extend({
 
 Pokedex.Views.ToyDetail = Backbone.View.extend({
   render: function () {
-    var scriptContent = $("script#toy-detail-template").html();
-    var templateFn = _.template(scriptContent);
+    var templateFn = JST["toyDetail"];
 
     var renderedTemplate = templateFn({
       pokes: this.collection,

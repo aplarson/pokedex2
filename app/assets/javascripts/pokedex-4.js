@@ -12,4 +12,6 @@ $(function () {
 
   JST["toyDetail"] =
     _.template($("#toy-detail-template").html());
+  
+  JST["pokemonEditDetail"] = _.template($("#pokemon-edit-detail-template").html())
 });

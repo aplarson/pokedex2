@@ -27,6 +27,74 @@
     
 </script>
 
+
+<script type="text/template" id="pokemon-edit-detail-template">
+  <div class="detail">
+    <img src="<%%= pokemon.get('image_url') %>">
+    <br>
+    <form>
+      <button class="upload-image">
+        Upload Image
+      </button>
+      <input type="hidden"
+             id="pokemon_image_url"
+             name="pokemon[image_url]"
+             value="<%%= pokemon.get('image_url') %>">
+      <br>
+      <%% for(var attr in pokemon.attributes) {%>
+        <%% if (pokemon.get(attr) && attr !== 'id' && attr !== 'image_url' && attr !== 'poke_type') {%>
+          <label style="font-weight:bold" for="pokemon_<%%= attr %>">
+            <%%= attr %>: 
+          </label>
+          <%% if( attr == "moves" || attr == "name"){ %>
+            <input type="text" value="<%%= pokemon.get(attr) %> "
+                 name="pokemon[<%%= attr %>]">
+                 
+          <%% } else { %>
+            <input type="number" value="<%%= parseInt(pokemon.get(attr)) %>"
+                   name="pokemon[<%%= attr %>]">
+          <%% } %>
+          
+          <br>
+        <%% } %>
+        
+      <%% } %>
+      <label
+        for='pokemon_poke_type'>Type:</label>
+      <select
+        id='pokemon_poke_type'
+        name='pokemon[poke_type]'>
+        <%% var types = [
+    "fire",
+    "electric",
+    "normal",
+    "ghost",
+    "psychic",
+    "water",
+    "bug",
+    "dragon",
+    "grass",
+    "fighting",
+    "ice",
+    "flying",
+    "poison",
+    "ground",
+    "rock",
+    "steel"
+  ] %>
+        <%% types.forEach(function (type) {%>
+          <option <%%= pokemon.get('poke_type') == type ? "selected" : "" %>><%%= type %></option>
+        <%% }) %>
+      </select>
+      <br>
+      <button>Update Pokemon</button>
+    <form>
+  </div>
+  <span style="font-weight: bold;">Toys:</span><br>
+  <ul class="toys"></ul>
+    
+</script>
+
 <script type="text/template" id="toy-list-item-template">
   <li class="toy-list-item" data-id="<%%= toy.id %>" data-pokemon-id="<%%= toy.get('pokemon_id') %>">
   <%% var shortInfo = ['name', 'happiness', 'price']; %>
@@ -72,15 +140,18 @@
         id='pokemon_name'
         name='pokemon[name]'>
     </div>
-
-    <div>
-      <label
-        for='pokemon_image_url'>Image URL:</label>
+    <div class="image">
       <input
-        type='text'
+        type='hidden'
         id='pokemon_image_url'
         name='pokemon[image_url]'>
-    </div>
+        
+        <button class="picture">
+          Upload Image
+        </button>
+    <div>
+    
+    
 
     <div>
       <label

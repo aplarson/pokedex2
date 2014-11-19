@@ -89,7 +89,7 @@ body {
   display:block;
 }
 
-.new-pokemon button {
+ button {
   padding: 5px;
   border: 0;
   color: white;
@@ -110,7 +110,6 @@ body {
 }
 
 .detail img {
-  float: left;
   max-width: 300px;
   max-height: 200px;
 }
