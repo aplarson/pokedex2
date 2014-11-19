@@ -126,6 +126,7 @@ Pokedex.Views.PokemonDetail = Backbone.View.extend({
   submitEditForm: function (event) {
     event.preventDefault();
     var pokeParams = $(event.currentTarget).serializeJSON()["pokemon"];
+    pokeParams["moves"] = pokeParams["moves"].split(",");
     this.model.set(pokeParams);
     this.model.save({}, {
       success: function () {
@@ -148,8 +149,8 @@ Pokedex.Views.NewForm = Backbone.View.extend({
 
     filepicker.pick(
       function(Blob){
-        $("#pokemon_image_url").val(Blob.url)
-        $("div.image").prepend("<img src=\"" + Blob.url + "\">")
+        this.$("#pokemon_image_url").val(Blob.url)
+        this.$("div.image-preview").html("<img src=\"" + Blob.url + "\">")
       }
     );
   },
