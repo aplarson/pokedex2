@@ -68,8 +68,8 @@ Pokedex.Views.PokemonDetail = Backbone.View.extend({
 
     filepicker.pick(
       function(Blob){
-        $("div.pokemon-detail input#pokemon_image_url").val(Blob.url)
-        $("div.pokemon-detail img").attr("src", Blob.url)
+        this.$("input#pokemon_image_url").val(Blob.url)
+        this.$("img").attr("src", Blob.url)
       }
     );
     

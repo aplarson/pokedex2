@@ -23,13 +23,10 @@ Pokedex.Router = Backbone.Router.extend({
         this._pokemonDetailView.refreshPokemon(callback);
       } else {
         var detail = this;
-        this._pokemonIndex.refreshPokemon(
-          function () {
-          pokemon = detail._pokemonIndex.collection.get(id);
-          detail._pokemonDetailView = new Pokedex.Views.PokemonDetail({
-            model: pokemon
-          })
-          detail._pokemonDetailView.refreshPokemon(callback);
+        this._pokemonIndex.refreshPokemon(function () {
+          if (detail._pokemonIndex.collection.get(id)) {
+            detail.pokemonDetail(id, callback)
+          }
         })
       }
     }
